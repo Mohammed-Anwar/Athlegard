@@ -148,7 +148,7 @@ body {
 .control-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
 
 .cipher-text { line-height: 2.0; font-size: 1.5rem; text-align: center; font-family: sans-serif; }
-.encrypted { color: var(--accent); font-weight: bold; }
+.encrypted { color: var(--accent); font-weight: bold; font-family: monospace;}
 .solved-text { color: var(--ink); }
 
 /* Animation and Utility */
