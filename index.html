@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المخطوطات القديمة</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center p-8">
+
+    <div id="main-ui" class="w-full max-w-6xl h-[85vh] flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+            <h1 id="level-title" class="text-2xl font-bold opacity-50"></h1>
+        </div>
+
+        <div id="game-content-area" class="flex-1 relative">
+            <!-- Game content will be dynamically injected here -->
+        </div>
+
+        <div id="success-nav" class="hidden animate-fadeIn flex justify-center mt-6">
+            <button onclick="GameManager.nextLevel()" class="bg-teal-600 hover:bg-teal-500 px-12 py-3 rounded-full font-bold shadow-lg transition-all">
+                المخطوطة التالية ←
+            </button>
+        </div>
+    </div>
+    
+    <script src="scripts/dictionary.js"></script>
+    <script src="scripts/levels.js"></script>
+    <script src="scripts/signs.js"></script>
+    <script src="scripts/sliding.js"></script>
+    <script src="scripts/fragments.js"></script>
+
+    <script>
+        let currentGame = null;
+        
+        const GameManager = {
+            index: 0,
+            
+            init() {
+                this.loadLevel();
+            },
+
+            loadLevel() {
+                const level = GameLevels[this.index];
+                document.getElementById('level-title').innerText = level.title;
+                document.getElementById('success-nav').classList.add('hidden');
+
+                if (level.type === 'signs') {
+                    currentGame = new SignsGame(level, () => this.showWin());
+                } else if (level.type === 'sliding') {
+                    currentGame = new SlidingGame(level, () => this.showWin());
+                } else if (level.type === 'fragments') {
+                    currentGame = new FragmentsGame(level, () => this.showWin());
+                }
+
+                currentGame.render();
+            },
+
+            showWin() {
+                document.getElementById('success-nav').classList.remove('hidden');
+                AudioEngine.play('correct');
+            },
+
+            nextLevel() {
+                this.index = (this.index + 1) % GameLevels.length;
+                this.loadLevel();
+            }
+        };
+        const AudioEngine = {
+            ctx: null,
+            init() { 
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            
+            // دالة مساعدة لتوليد رقم عشوائي ضمن نطاق معين
+            getRandomPitch(freq, range = 0.05) {
+                // إذا كان التردد 400 والمدى 0.05، سيعطي رقماً بين 380 و 420
+                const min = freq * (1 - range);
+                const max = freq * (1 + range);
+                return Math.random() * (max - min) + min;
+            },
+
+            play(type) {
+                this.init();
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                
+                const now = this.ctx.currentTime;
+
+                if (type === 'click') {
+                    // إضافة عشوائية بسيطة لصوت الضغطة
+                    const pitch = this.getRandomPitch(800, 0.1); 
+                    this.createTone(pitch, now, 0.05, 'sine');
+                } 
+                else if (type === 'correct') {
+                    // نغمة النجاح يفضل أن تكون ثابتة لتعطي شعوراً بالاستقرار، أو بعشوائية خفيفة جداً
+                    this.createTone(523, now, 0.4, 'sine');
+                    this.createTone(659, now + 0.1, 0.4, 'sine');
+                } 
+                else if (type === 'wrong') {
+                    const pitch = this.getRandomPitch(120, 0.05);
+                    this.createTone(pitch, now, 0.3, 'triangle', true);
+                }
+                else if (type === 'popup') {
+                    this.createTone(400, now, 0.5, 'sine', false, 1200);
+                }
+            },
+
+            createTone(freq, time, duration, type, slideDown = false, slideUp = null) {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, time);
+
+                if (slideDown) {
+                    osc.frequency.exponentialRampToValueAtTime(freq * 0.5, time + duration);
+                } else if (slideUp) {
+                    osc.frequency.exponentialRampToValueAtTime(slideUp, time + duration);
+                }
+
+                gain.gain.setValueAtTime(0, time);
+                gain.gain.linearRampToValueAtTime(0.15, time + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(time);
+                osc.stop(time + duration);
+            }
+        };
+        
+        document.addEventListener('click', (e) => {
+            // إذا كان العنصر الذي ضغطنا عليه زر أو يملك كلاس معين
+            if (e.target.tagName === 'BUTTON' || e.target.closest('.word-wrapper')) {
+                AudioEngine.play('click');
+            }
+        });
+        window.onload = () => GameManager.init();
+    </script>
+</body>
+</html>

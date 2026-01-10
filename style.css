@@ -1,0 +1,164 @@
+/* style.css */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Symbols+2&family=Cairo:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap');
+
+:root {
+    --parchment: #f2e8cf;
+    --ink: #386641;
+    --accent: #bc4749;
+    --ancient-font: 'Noto Sans Symbols 2', sans-serif;
+    --bg-dark: #121212;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Amiri', serif;
+    color: #f2e8cf;
+    margin: 0;
+    overflow: hidden;
+}
+/***
+    background-image: url("paperBG.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+***/
+
+/* Common Layout */
+.paper-texture {
+    background-color: var(--parchment);
+    
+    color: #2b2d42;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 100px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#paper-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Vertical centering */
+    min-height: 60vh;
+}
+
+/* Success Button Animation and Style */
+#success-nav {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 50;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.8s forwards;
+}
+
+@keyframes win-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.text-win-animation {
+    color: #22c55e !important; /* Tailwind green-500 */
+    animation: win-pop 0.6s ease-out;
+    transition: color 0.3s ease;
+}
+
+/* Ensure the container can scale without clipping */
+#text-display {
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+.controls-hidden {
+    opacity: 0;
+    pointer-events: none; /* Prevents clicking after win */
+    transform: scale(0.9);
+    transition: all 0.5s ease;
+}
+.hide-arrows .control-btn,
+.hide-arrows .mt-12 button {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px); /* Adds a slight downward slide as they fade */
+    transition: all 0.4s ease;
+}
+
+/* Optional: Make the grid look "locked" when won */
+.hide-arrows #cipher-grid {
+    border-color: #22c55e; /* Green border */
+    transition: border-color 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Sidebar transition to full screen on win */
+.sidebar-hidden {
+    display: none !important;
+}
+
+.archive-full-width {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+/* Signs Game Styles */
+.word-wrapper { display: inline-block; margin-left: 0.4em; cursor: pointer; }
+.glyph { padding: 0 4px; border-radius: 2px; }
+.word-wrapper.selected .glyph { background-color: var(--accent); color: white; border-bottom: none; }
+.translated-text { font-weight: 700; color: #2a9d8f; }
+.ancient-script { font-family: var(--ancient-font); font-size: 1.8rem; }
+
+/* Sliding Game Matrix Styles */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 64px);
+    grid-template-rows: repeat(3, 64px);
+    gap: 12px;
+    position: relative;
+    padding: 12px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    border: 2px solid #333;
+    overflow: hidden;
+}
+
+.grid-cell {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    background: #2a2a2a; border: 1px solid #444;
+    font-family: sans-serif; font-size: 1.8rem; font-weight: bold;
+    color: #fff; border-radius: 4px;
+}
+
+.control-btn {
+    background: #2a2a2a; color: #888; border: 1px solid #444;
+    width: 32px; height: 32px; cursor: pointer; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-size: 0.8rem;
+}
+
+.control-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+.cipher-text { line-height: 2.0; font-size: 1.5rem; text-align: center; font-family: sans-serif; }
+.encrypted { color: var(--accent); font-weight: bold; }
+.solved-text { color: var(--ink); }
+
+/* Animation and Utility */
+.fade-out { 
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0; 
+    transform: translateX(-20px); 
+    pointer-events: none; 
+}
+.hidden { display: none !important; }
+.hint-active .grid-cell { color: #2a9d8f; text-shadow: 0 0 8px #2a9d8f; }
