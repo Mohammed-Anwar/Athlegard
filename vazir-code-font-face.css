@@ -1,0 +1,42 @@
+@font-face {
+  font-family: Vazir Code;
+  src: url('./fonts/vazir-code/Vazir-Code.eot');
+  src: url('./fonts/vazir-code/Vazir-Code.eot?#iefix')
+      format('embedded-opentype'),
+    url('./fonts/vazir-code/Vazir-Code.woff') format('woff'),
+    url('./fonts/vazir-code/Vazir-Code.ttf') format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Vazir Code Extra Height;
+  src: url('./fonts/vazir-code/Vazir-Code-Extra-Height.eot');
+  src: url('./fonts/vazir-code/Vazir-Code-Extra-Height.eot?#iefix')
+      format('embedded-opentype'),
+    url('./fonts/vazir-code/Vazir-Code-Extra-Height.woff') format('woff'),
+    url('./fonts/vazir-code/Vazir-Code-Extra-Height.ttf')
+      format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Vazir Code Hack;
+  src: url('./fonts/vazir-code/Vazir-Code-Hack.eot');
+  src: url('./fonts/vazir-code/Vazir-Code-Hack.eot?#iefix')
+      format('embedded-opentype'),
+    url('./fonts/vazir-code/Vazir-Code-Hack.woff') format('woff'),
+    url('./fonts/vazir-code/Vazir-Code-Hack.ttf') format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Vazir Code Hack Extra Height;
+  src: url('./fonts/vazir-code/Vazir-Code-Hack-Extra-Height.eot');
+  src: url('./fonts/vazir-code/Vazir-Code-Hack-Extra-Height.eot?#iefix')
+      format('embedded-opentype'),
+    url('./fonts/vazir-code/Vazir-Code-Hack-Extra-Height.woff')
+      format('woff'),
+    url('./fonts/vazir-code/Vazir-Code-Hack-Extra-Height.ttf')
+      format('truetype');
+  font-weight: normal;
+}
