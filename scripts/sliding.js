@@ -5,6 +5,7 @@ class SlidingGame {
         this.grid = [];
         this.solvedGrid = [];
         this.isSolved = false;
+        this.isAnimating = false;
     }
 
     render() {
@@ -96,20 +97,94 @@ class SlidingGame {
     }
 
     shiftRow(idx, dir, check = true) {
-        if(this.isSolved) return;
-        const row = this.grid[idx];
-        if (dir === 1) row.push(row.shift());
-        else row.unshift(row.pop());
-        if(check) this.afterMove();
+        if(this.isSolved || this.isAnimating) return;
+        
+        if (check) {
+            this.isAnimating = true;
+            this.animateRow(idx, dir);
+            
+            setTimeout(() => {
+                const row = this.grid[idx];
+                if (dir === 1) row.push(row.shift());
+                else row.unshift(row.pop());
+                this.isAnimating = false;
+                this.afterMove();
+            }, 250);
+        } else {
+            const row = this.grid[idx];
+            if (dir === 1) row.push(row.shift());
+            else row.unshift(row.pop());
+        }
+    }
+
+    animateRow(rowIdx, dir) {
+        const container = document.getElementById('cipher-grid');
+        const cells = container.querySelectorAll('.grid-cell');
+        
+        // Get cells in this row (indices: rowIdx*3, rowIdx*3+1, rowIdx*3+2)
+        const startIdx = rowIdx * 3;
+        const rowCells = [cells[startIdx], cells[startIdx + 1], cells[startIdx + 2]];
+        
+        // dir === 1 means shift right (◀ button), dir === -1 means shift left (▶ button)
+        const animClass = dir === 1 ? 'animate-row-right' : 'animate-row-left';
+        const wrapClass = dir === 1 ? 'wrap-right' : 'wrap-left';
+        
+        // The wrapping cell is the one that will disappear and reappear
+        const wrapIdx = dir === 1 ? 2 : 0; // rightmost wraps when going right, leftmost wraps when going left
+        
+        rowCells.reverse().forEach((cell, i) => {
+            if (i === wrapIdx) {
+                cell.classList.add(wrapClass);
+            } else {
+                cell.classList.add(animClass);
+            }
+        });
     }
 
     shiftCol(idx, dir, check = true) {
-        if(this.isSolved) return;
-        const col = [this.grid[0][idx], this.grid[1][idx], this.grid[2][idx]];
-        if (dir === 1) col.unshift(col.pop());
-        else col.push(col.shift());
-        [this.grid[0][idx], this.grid[1][idx], this.grid[2][idx]] = col;
-        if(check) this.afterMove();
+        if(this.isSolved || this.isAnimating) return;
+        
+        if (check) {
+            this.isAnimating = true;
+            this.animateCol(idx, dir);
+            
+            setTimeout(() => {
+                const col = [this.grid[0][idx], this.grid[1][idx], this.grid[2][idx]];
+                if (dir === 1) col.unshift(col.pop());
+                else col.push(col.shift());
+                [this.grid[0][idx], this.grid[1][idx], this.grid[2][idx]] = col;
+                this.isAnimating = false;
+                this.afterMove();
+            }, 250);
+        } else {
+            const col = [this.grid[0][idx], this.grid[1][idx], this.grid[2][idx]];
+            if (dir === 1) col.unshift(col.pop());
+            else col.push(col.shift());
+            [this.grid[0][idx], this.grid[1][idx], this.grid[2][idx]] = col;
+        }
+    }
+
+    animateCol(colIdx, dir) {
+        const container = document.getElementById('cipher-grid');
+        const cells = container.querySelectorAll('.grid-cell');
+        
+        // Get cells in this column (indices: colIdx, colIdx+3, colIdx+6)
+        const colCells = [cells[colIdx], cells[colIdx + 3], cells[colIdx + 6]];
+        
+        // dir === 1 means shift down (▲ button), dir === -1 means shift up (▼ button)
+        const animClass = dir === 1 ? 'animate-col-down' : 'animate-col-up';
+        const wrapClass = dir === 1 ? 'wrap-down' : 'wrap-up';
+        
+        // The wrapping cell
+        const wrapIdx = dir === 1 ? 2 : 0; // bottom wraps when going down, top wraps when going up
+        
+        colCells.forEach((cell, i) => {
+            if (i === wrapIdx) {
+                cell.classList.add(wrapClass);
+            } else {
+                cell.classList.add(animClass);
+            }
+        });
     }
 
     afterMove() {

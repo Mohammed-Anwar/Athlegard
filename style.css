@@ -147,6 +147,66 @@ body {
 
 .control-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
 
+/* Wrap-Around Sliding Animations */
+@keyframes slide-row-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-76px); } /* cell width (64px) + gap (12px) */
+}
+
+@keyframes slide-row-right {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(76px); }
+}
+
+@keyframes slide-col-up {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-76px); }
+}
+
+@keyframes slide-col-down {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(76px); }
+}
+
+/* Wrap exit animations - cell leaving screen */
+@keyframes wrap-exit-left {
+    0% { transform: translateX(0); opacity: 1; }
+    50% { transform: translateX(-40px); opacity: 0; }
+    50.01% { transform: translateX(40px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes wrap-exit-right {
+    0% { transform: translateX(0); opacity: 1; }
+    50% { transform: translateX(40px); opacity: 0; }
+    50.01% { transform: translateX(-40px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes wrap-exit-up {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(-40px); opacity: 0; }
+    50.01% { transform: translateY(40px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes wrap-exit-down {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(40px); opacity: 0; }
+    50.01% { transform: translateY(-40px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.grid-cell.animate-row-left { animation: slide-row-left 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.grid-cell.animate-row-right { animation: slide-row-right 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.grid-cell.animate-col-up { animation: slide-col-up 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.grid-cell.animate-col-down { animation: slide-col-down 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+.grid-cell.wrap-left { animation: wrap-exit-left 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.grid-cell.wrap-right { animation: wrap-exit-right 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.grid-cell.wrap-up { animation: wrap-exit-up 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.grid-cell.wrap-down { animation: wrap-exit-down 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
 .cipher-text { 
     line-height: 2.0; 
     font-size: 1.5rem; 
