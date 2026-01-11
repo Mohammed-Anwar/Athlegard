@@ -13,7 +13,7 @@ class SlidingGame {
         container.innerHTML = `
             <div id="game-root" class="w-full h-full flex gap-8">
                 <div id="sidebar" class="w-[400px] bg-zinc-900 rounded-xl p-6 flex flex-col items-center justify-center">
-                    <h2 class="text-xl font-bold mb-8 opacity-70">مصفوفة التشفير</h2>
+                    <h2 id="level-title" class="text-xl font-bold mb-8 opacity-70">مصفوفة التشفير</h2>
                     
                     <div id="controls-wrapper" class="relative flex flex-col items-center gap-2 transition-all duration-500">
 

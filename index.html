@@ -12,9 +12,7 @@
 <body class="h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center p-8">
 
     <div id="main-ui" class="w-full max-w-6xl h-[85vh] flex flex-col">
-        <div class="flex justify-between items-center mb-6">
-            <h1 id="level-title" class="text-2xl font-bold opacity-50"></h1>
-        </div>
+        
 
         <div id="game-content-area" class="flex-1 relative">
             <!-- Game content will be dynamically injected here -->
@@ -30,6 +28,8 @@
     <script src="scripts/dictionary.js"></script>
     <script src="scripts/levels.js"></script>
     <script src="scripts/signs.js"></script>
+    <script src="scripts/sliding1D.js"></script>
+    <script src="scripts/slidingCross.js"></script>
     <script src="scripts/sliding.js"></script>
     <script src="scripts/fragments.js"></script>
 
@@ -45,18 +45,24 @@
 
             loadLevel() {
                 const level = GameLevels[this.index];
-                document.getElementById('level-title').innerText = level.title;
+                
                 document.getElementById('success-nav').classList.add('hidden');
 
                 if (level.type === 'signs') {
                     currentGame = new SignsGame(level, () => this.showWin());
-                } else if (level.type === 'sliding') {
+                } else if (level.type === 'SlidingGame') {
                     currentGame = new SlidingGame(level, () => this.showWin());
+                } else if (level.type === 'Sliding1DGame') {
+                    currentGame = new Sliding1DGame(level, () => this.showWin());
+                } else if (level.type === 'SlidingCrossGame') {
+                    currentGame = new SlidingCrossGame(level, () => this.showWin());
                 } else if (level.type === 'fragments') {
                     currentGame = new FragmentsGame(level, () => this.showWin());
                 }
 
                 currentGame.render();
+                
+                document.getElementById('level-title').innerText = level.title;
             },
 
             showWin() {

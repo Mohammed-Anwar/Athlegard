@@ -207,6 +207,9 @@ body {
 .grid-cell.wrap-up { animation: wrap-exit-up 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 .grid-cell.wrap-down { animation: wrap-exit-down 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 
+#paper-illustration{
+    font-size: 4rem;
+}
 .cipher-text { 
     line-height: 2.0; 
     font-size: 1.5rem; 
