@@ -17,12 +17,13 @@
         <div id="game-content-area" class="flex-1 relative">
             <!-- Game content will be dynamically injected here -->
         </div>
-
+        <!-- زر التنقل للمستوى التالي 
         <div id="success-nav" class="hidden animate-fadeIn flex justify-center mt-6">
             <button onclick="GameManager.nextLevel()" class="bg-teal-600 hover:bg-teal-500 px-12 py-3 rounded-full font-bold shadow-lg transition-all">
                 المخطوطة التالية ←
             </button>
         </div>
+        -->
     </div>
     
     <script src="scripts/dictionary.js"></script>
@@ -45,9 +46,7 @@
 
             loadLevel() {
                 const level = GameLevels[this.index];
-                
-                document.getElementById('success-nav').classList.add('hidden');
-
+                console.log("تحميل المستوى:", level.title);
                 if (level.type === 'signs') {
                     currentGame = new SignsGame(level, () => this.showWin());
                 } else if (level.type === 'SlidingGame') {
@@ -66,7 +65,14 @@
             },
 
             showWin() {
-                document.getElementById('success-nav').classList.remove('hidden');
+                const winBtn = document.getElementById('success-nav');
+                if (winBtn) {
+                    winBtn.classList.remove('hidden');
+                    
+                    winBtn.style.display = 'block'; // Force display if hidden by other logic
+                } else{
+                    console.log("زر التنقل للمستوى التالي غير موجود في الـ HTML.");
+                }
                 AudioEngine.play('correct');
             },
 

@@ -38,7 +38,13 @@ class SlidingCrossGame {
                     </div>
 
                     <div class="mt-12 flex gap-4 w-full px-8">
-                        <button onclick="currentGame.initGrid()" class="flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
+                        <button onclick="currentGame.initGrid()" class="rest flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
+                        
+                        <div id="success-nav" class="hidden animate-fadeIn w-full">
+                            <button onclick="GameManager.nextLevel()" class="w-full py-3 rounded font-bold shadow-lg transition-all success-textured-btn">
+                                المخطوطة التالية ←
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="flex-1 paper-texture flex flex-col items-center justify-center p-12">
@@ -56,7 +62,7 @@ class SlidingCrossGame {
         
         if (sidebar) sidebar.classList.remove('hide-arrows');
         if (textDisplay) {
-            textDisplay.classList.remove('text-win-animation');
+            textDisplay.classList.remove('solved-ink');
             textDisplay.style.color = "";
         }
 
@@ -167,7 +173,7 @@ class SlidingCrossGame {
             this.isSolved = true;
             this.renderAll();
             document.getElementById('sidebar')?.classList.add('hide-arrows');
-            document.getElementById('text-display')?.classList.add('text-win-animation');
+            document.getElementById('text-display')?.classList.add('solved-ink');
             setTimeout(() => { if(this.onWin) this.onWin(); }, 1000);
         }
     }
@@ -215,7 +221,7 @@ class SlidingCrossGame {
         
         display.innerHTML = this.data.text.split('').map(char => {
             if (map[char]) {
-                const statusClass = this.isSolved ? 'text-green-500 font-bold' : 'encrypted';
+                const statusClass = this.isSolved ? 'solved-ink' : 'encrypted';
                 return `<span class="${statusClass}">${map[char]}</span>`;
             }
             return char;

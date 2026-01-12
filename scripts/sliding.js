@@ -50,7 +50,13 @@ class SlidingGame {
                     </div>
 
                     <div class="mt-12 flex gap-4 w-full px-8">
-                        <button onclick="currentGame.initGrid()" class="flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
+                        <button onclick="currentGame.initGrid()" class="rest flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
+                        
+                        <div id="success-nav" class="hidden animate-fadeIn w-full">
+                            <button onclick="GameManager.nextLevel()" class="w-full py-3 rounded font-bold shadow-lg transition-all success-textured-btn">
+                                المخطوطة التالية ←
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="flex-1 paper-texture flex flex-col items-center justify-center p-12">
@@ -200,7 +206,7 @@ class SlidingGame {
 
             // 2. Apply the green color and scale effect
             const textDisplay = document.getElementById('text-display');
-            if (textDisplay) textDisplay.classList.add('text-win-animation');
+            if (textDisplay) textDisplay.classList.add('solved-ink');
 
             // 3. Proceed to the next step after the animation
             setTimeout(() => {
@@ -227,13 +233,24 @@ class SlidingGame {
 
     renderText() {
         const display = document.getElementById('text-display');
+        const textLength = this.data.text.length;
+        console.log(textLength)
+        // Adjust font size based on character count
+        if (textLength > 400) {
+            display.style.fontSize = "1.0rem";
+        } else if (textLength > 200) {
+            display.style.fontSize = "1.4rem";
+        } else {
+            display.style.fontSize = "2.2rem";
+        }
+
         const map = {};
         this.solvedGrid.flat().forEach((char, i) => map[char] = this.grid.flat()[i]);
         
         display.innerHTML = this.data.text.split('').map(char => {
             // If game is solved, we use a specific class for the letters
             if (map[char]) {
-                const statusClass = this.isSolved ? 'text-green-500 font-bold' : 'encrypted';
+                const statusClass = this.isSolved ? 'solved-ink' : 'encrypted';
                 return `<span class="${statusClass}">${map[char]}</span>`;
             }
             return char;
