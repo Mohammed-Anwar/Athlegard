@@ -76,19 +76,46 @@
             },
 
             showWin() {
-                const winBtn = document.getElementById('success-nav');
-                if (winBtn) {
-                    winBtn.classList.remove('hidden');
-                    
-                    winBtn.style.display = 'block'; // Force display if hidden by other logic
-                } else{
-                    console.log("زر التنقل للمستوى التالي غير موجود في الـ HTML.");
+                if (this.index === GameLevels.length - 1) {
+                    this.triggerFinalEnding();
+                } else {
+                    // Normal win logic
+                    const winBtn = document.getElementById('success-nav');
+                    if (winBtn) {
+                        winBtn.classList.remove('hidden');
+                        winBtn.style.display = 'block'; // Force display if hidden by other logic
+                    } else{
+                        console.log("زر التنقل للمستوى التالي غير موجود في الـ HTML.");
+                    }
+                    const existingHint = document.querySelector('.parchment-hint');
+                    if (existingHint) existingHint.remove();
+                    AudioEngine.play('correct');
                 }
-                const existingHint = document.querySelector('.parchment-hint');
-                if (existingHint) existingHint.remove();
-                AudioEngine.play('correct');
             },
+            triggerFinalEnding() {
+                // Stop the hint timer permanently
+                if (typeof HintSystem !== 'undefined') HintSystem.reset();
 
+                // Show a special full-screen modal or update the UI
+                UIManager.contentArea.innerHTML = `
+                    <div class="text-center p-4">
+                        <h2 class="text-4xl font-bold mb-6 text-amber-400 animate-bounce">لقد اكتمل الرنين!</h2>
+                        <div class="text-lg leading-loose space-y-4 text-zinc-300">
+                            <p>لقد نجحت في فك شفرة آخر المخطوطات. الآن، تلاشت الغمامة عن أثليجارد.</p>
+                            <p class="italic text-teal-400">"الحقيقة ليست فيما كُتب، بل في الصوت الذي يتردد بين السطور."</p>
+                            <p>لقد أصبحت الآن حارس الذاكرة الأخير.</p>
+                        </div>
+                        <div class="mt-10 flex flex-col gap-4">
+                            <button onclick="location.reload()" class="modal-btn-primary py-4">✨ العودة إلى البداية</button>
+                            <p class="text-xs opacity-40">تم استعادة جميع النصوص المفقودة بنجاح.</p>
+                        </div>
+                    </div>
+                `;
+                UIManager.show();
+                
+                // Optional: Add a special "Ending" class to the body for visual flair
+                document.body.classList.add('ending-active');
+            },
             nextLevel() {
                 this.index = (this.index + 1) % GameLevels.length;
                 this.loadLevel();

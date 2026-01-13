@@ -442,3 +442,24 @@ body::after {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+.ending-active {
+    transition: background 3s ease;
+    background: radial-gradient(circle, #1a2e2c 0%, #09090b 100%);
+}
+
+.ending-active #game-root {
+    filter: blur(4px);
+    pointer-events: none;
+    transition: filter 2s ease;
+}
+
+@keyframes final-glow {
+    0% { text-shadow: 0 0 10px rgba(20, 184, 166, 0.5); }
+    50% { text-shadow: 0 0 30px rgba(20, 184, 166, 0.9); }
+    100% { text-shadow: 0 0 10px rgba(20, 184, 166, 0.5); }
+}
+
+.text-amber-400 {
+    animation: final-glow 3s infinite ease-in-out;
+}
