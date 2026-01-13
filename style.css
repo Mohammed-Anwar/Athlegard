@@ -422,7 +422,7 @@ body::after {
     box-shadow: 5px 5px 15px rgba(0,0,0,0.4), 
                 inset 0 0 30px rgba(188, 71, 73, 0.1);
     border-left: 4px solid #bc4749;
-    font-family: 'Amiri', serif;
+    font-family: sans-serif;
     font-weight: bold;
     z-index: 100;
     max-width: 300px;

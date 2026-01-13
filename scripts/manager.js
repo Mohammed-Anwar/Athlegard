@@ -9,7 +9,7 @@ const UIManager = {
 
     createModalElements() {
         const gearBtn = document.createElement('button');
-        gearBtn.innerHTML = '⚙️';
+        gearBtn.innerHTML = '<i class="fa-solid fa-sliders"></i>';
         gearBtn.className = 'gear-btn';
         gearBtn.onclick = () => this.showSettingsMenu();
         document.body.appendChild(gearBtn);
@@ -50,9 +50,9 @@ const UIManager = {
             <h2 class="text-2xl font-bold mb-6 text-teal-400">القائمة</h2>
             <div class="flex flex-col gap-4">
                 ${hintButtonHTML}
-                <button onclick="UIManager.showTutorial()" class="modal-btn-secondary">📖 طريقة اللعب</button>
-                <button onclick="UIManager.showResetConfirmation()" class="modal-btn-secondary border-red-900 text-red-400">🔄 إعادة تشغيل اللعبة</button>
-                <button onclick="UIManager.hide()" class="modal-btn-close">إغلاق</button>
+                <button onclick="UIManager.showTutorial()" class="modal-btn-secondary"><i class="fa-solid fa-book-bookmark"></i> طريقة اللعب</button>
+                <button onclick="UIManager.showResetConfirmation()" class="modal-btn-secondary border-red-900 text-red-400"><i class="fa-solid fa-arrows-rotate"></i> إعادة تشغيل اللعبة</button>
+                <button onclick="UIManager.hide()" class="modal-btn-secondary">إغلاق</button>
             </div>
         `;
         this.show();
@@ -83,7 +83,7 @@ const UIManager = {
 const HintSystem = {
     timer: null,
     stage: 0, 
-    thresholds: [60, 60, 60], // Time in seconds
+    thresholds: [120, 120, 180], // Time in seconds
     hintAvailableInMenu: false,
 
     startLevelTimer() {

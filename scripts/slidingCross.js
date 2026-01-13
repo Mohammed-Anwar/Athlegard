@@ -171,6 +171,7 @@ class SlidingCrossGame {
         this.renderAll();
         if (JSON.stringify(this.grid) === JSON.stringify(this.solvedGrid)) {
             this.isSolved = true;
+            if (typeof HintSystem !== 'undefined') HintSystem.reset();
             this.renderAll();
             document.getElementById('sidebar')?.classList.add('hide-arrows');
             document.getElementById('text-display')?.classList.add('solved-ink');

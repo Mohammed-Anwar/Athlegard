@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المخطوطات القديمة</title>
+    <title>الأرشيف</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="vazir-code-font-face.css">
@@ -26,12 +27,11 @@
         -->
     </div>
     
-    <script src="scripts/dictionary.js"></script>
+    
     <script src="scripts/levels.js"></script>
-    <script src="scripts/signs.js"></script>
-    <script src="scripts/sliding1D.js"></script>
     <script src="scripts/slidingCross.js"></script>
     <script src="scripts/sliding.js"></script>
+    <script src="scripts/slidingBroken.js"></script>
     <script src="scripts/fragments.js"></script>
     <script src="scripts/manager.js"></script>
 
@@ -48,8 +48,8 @@
             loadLevel() {
                 const level = GameLevels[this.index];
                 console.log("تحميل المستوى:", level.title);
-                if (level.type === 'signs') {
-                    window.currentGame = new SignsGame(level, () => this.showWin());
+                if (level.type === 'slidingBroken') {
+                    window.currentGame = new SlidingBrokenGame(level, () => this.showWin());
                 } else if (level.type === 'SlidingGame') {
                     window.currentGame = new SlidingGame(level, () => this.showWin());
                 } else if (level.type === 'Sliding1DGame') {

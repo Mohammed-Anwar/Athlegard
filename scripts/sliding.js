@@ -198,6 +198,7 @@ class SlidingGame {
         
         if (JSON.stringify(this.grid) === JSON.stringify(this.solvedGrid)) {
             this.isSolved = true;
+            if (typeof HintSystem !== 'undefined') HintSystem.reset();
             this.renderAll();
 
             // 1. This triggers the CSS to hide arrows AND the Reset button
@@ -251,7 +252,7 @@ class SlidingGame {
         // Adjust font size based on character count
         if (textLength > 400) {
             display.style.fontSize = "1.0rem";
-        } else if (textLength > 200) {
+        } else if (textLength > 150) {
             display.style.fontSize = "1.4rem";
         } else {
             display.style.fontSize = "2.2rem";
