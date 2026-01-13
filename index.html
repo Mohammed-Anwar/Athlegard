@@ -33,6 +33,7 @@
     <script src="scripts/slidingCross.js"></script>
     <script src="scripts/sliding.js"></script>
     <script src="scripts/fragments.js"></script>
+    <script src="scripts/manager.js"></script>
 
     <script>
         let currentGame = null;
@@ -48,20 +49,30 @@
                 const level = GameLevels[this.index];
                 console.log("تحميل المستوى:", level.title);
                 if (level.type === 'signs') {
-                    currentGame = new SignsGame(level, () => this.showWin());
+                    window.currentGame = new SignsGame(level, () => this.showWin());
                 } else if (level.type === 'SlidingGame') {
-                    currentGame = new SlidingGame(level, () => this.showWin());
+                    window.currentGame = new SlidingGame(level, () => this.showWin());
                 } else if (level.type === 'Sliding1DGame') {
-                    currentGame = new Sliding1DGame(level, () => this.showWin());
+                    window.currentGame = new Sliding1DGame(level, () => this.showWin());
                 } else if (level.type === 'SlidingCrossGame') {
-                    currentGame = new SlidingCrossGame(level, () => this.showWin());
+                    window.currentGame = new SlidingCrossGame(level, () => this.showWin());
                 } else if (level.type === 'fragments') {
-                    currentGame = new FragmentsGame(level, () => this.showWin());
+                    window.currentGame = new FragmentsGame(level, () => this.showWin());
                 }
 
-                currentGame.render();
+                window.currentGame.render();
                 
                 document.getElementById('level-title').innerText = level.title;
+                
+                if (typeof HintSystem !== 'undefined') {
+                    // If it's a 1D game, reset and stop the timer
+                    if (level.type === "Sliding1DGame") {
+                        HintSystem.reset(); 
+                    } else {
+                        // Otherwise, start the hint sequence
+                        HintSystem.startLevelTimer();
+                    }
+                }
             },
 
             showWin() {
@@ -73,6 +84,8 @@
                 } else{
                     console.log("زر التنقل للمستوى التالي غير موجود في الـ HTML.");
                 }
+                const existingHint = document.querySelector('.parchment-hint');
+                if (existingHint) existingHint.remove();
                 AudioEngine.play('correct');
             },
 

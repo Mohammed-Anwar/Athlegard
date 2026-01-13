@@ -19,38 +19,38 @@ class SlidingGame {
 
                         <div class="relative flex flex-col items-center gap-2">
                             <div class="flex gap-[44px]">
-                                <button onclick="currentGame.shiftCol(0, -1)" class="control-btn">▲</button>
-                                <button onclick="currentGame.shiftCol(1, -1)" class="control-btn">▲</button>
-                                <button onclick="currentGame.shiftCol(2, -1)" class="control-btn">▲</button>
+                                <button onclick="window.currentGame.shiftCol(0, -1)" class="control-btn">▲</button>
+                                <button onclick="window.currentGame.shiftCol(1, -1)" class="control-btn">▲</button>
+                                <button onclick="window.currentGame.shiftCol(2, -1)" class="control-btn">▲</button>
                             </div>
 
                             <div class="flex items-center gap-2">
                                 <div class="flex flex-col gap-[44px]">
-                                    <button onclick="currentGame.shiftRow(0, 1)" class="control-btn">▶</button>
-                                    <button onclick="currentGame.shiftRow(1, 1)" class="control-btn">▶</button>
-                                    <button onclick="currentGame.shiftRow(2, 1)" class="control-btn">▶</button>
+                                    <button onclick="window.currentGame.shiftRow(0, 1)" class="control-btn">▶</button>
+                                    <button onclick="window.currentGame.shiftRow(1, 1)" class="control-btn">▶</button>
+                                    <button onclick="window.currentGame.shiftRow(2, 1)" class="control-btn">▶</button>
                                 </div>
 
                                 <div id="cipher-grid" class="grid-container"></div>
 
                                 <div class="flex flex-col gap-[44px]">
-                                    <button onclick="currentGame.shiftRow(0, -1)" class="control-btn">◀</button>
-                                    <button onclick="currentGame.shiftRow(1, -1)" class="control-btn">◀</button>
-                                    <button onclick="currentGame.shiftRow(2, -1)" class="control-btn">◀</button>
+                                    <button onclick="window.currentGame.shiftRow(0, -1)" class="control-btn">◀</button>
+                                    <button onclick="window.currentGame.shiftRow(1, -1)" class="control-btn">◀</button>
+                                    <button onclick="window.currentGame.shiftRow(2, -1)" class="control-btn">◀</button>
                                 </div>
                             </div>
 
                             <div class="flex gap-[44px]">
-                                <button onclick="currentGame.shiftCol(0, 1)" class="control-btn">▼</button>
-                                <button onclick="currentGame.shiftCol(1, 1)" class="control-btn">▼</button>
-                                <button onclick="currentGame.shiftCol(2, 1)" class="control-btn">▼</button>
+                                <button onclick="window.currentGame.shiftCol(0, 1)" class="control-btn">▼</button>
+                                <button onclick="window.currentGame.shiftCol(1, 1)" class="control-btn">▼</button>
+                                <button onclick="window.currentGame.shiftCol(2, 1)" class="control-btn">▼</button>
                             </div>
                         </div>
                         
                     </div>
 
                     <div class="mt-12 flex gap-4 w-full px-8">
-                        <button onclick="currentGame.initGrid()" class="rest flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
+                        <button onclick="window.currentGame.initGrid()" class="rest flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
                         
                         <div id="success-nav" class="hidden animate-fadeIn w-full">
                             <button onclick="GameManager.nextLevel()" class="w-full py-3 rounded font-bold shadow-lg transition-all success-textured-btn">
@@ -223,9 +223,22 @@ class SlidingGame {
     renderGrid() {
         const container = document.getElementById('cipher-grid');
         container.innerHTML = '';
-        this.grid.flat().forEach(char => {
+        
+        // Get flat versions to compare positions
+        const flatCurrent = this.grid.flat();
+        const flatSolved = this.solvedGrid.flat();
+
+        flatCurrent.forEach((char, i) => {
             const div = document.createElement('div');
             div.className = 'grid-cell';
+            
+            // If Green Mode is active AND the character is in the correct spot
+            if (this.greenModeActive && char === flatSolved[i]) {
+                div.style.color = "#4ade80"; // Bright green
+                div.style.textShadow = "0 0 10px rgba(74, 222, 128, 0.5)";
+                div.style.borderColor = "#4ade80";
+            }
+
             div.innerText = char;
             container.appendChild(div);
         });
@@ -255,5 +268,44 @@ class SlidingGame {
             }
             return char;
         }).join('');
+    }
+    
+    provideHint(stage) {
+        if (stage === 0) {
+            // Hint 1: Show first row letters in a Sticky Parchment
+            const firstRow = this.solvedGrid[0].join(' - ');
+            this.showStickyHint("أحرف الصف الأول مرتبة هي: " + firstRow);
+        } 
+        else if (stage === 1) {
+            // Hint 2: Enable "Green Mode"
+            this.greenModeActive = true;
+            this.renderGrid();
+        }
+    }
+
+    showStickyHint(message) {
+        // Remove existing hint if there is one
+        const existing = document.querySelector('.parchment-hint');
+        if (existing) existing.remove();
+
+        const hintEl = document.createElement('div');
+        hintEl.className = 'parchment-hint';
+        hintEl.innerHTML = `<span>${message}</span>`;
+        
+
+        document.body.appendChild(hintEl);
+    }
+    autoSolve() {
+        // 1. Force the current grid to match the solved state
+        this.grid = JSON.parse(JSON.stringify(this.solvedGrid));
+        
+        // 2. Refresh the UI to show the correct letters
+        this.renderAll();
+        
+        // 3. Trigger the standard win logic
+        this.afterMove(); 
+        
+        // Optional: Stop the timer since the level is over
+        if (typeof HintSystem !== 'undefined') HintSystem.reset();
     }
 }

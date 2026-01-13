@@ -17,16 +17,16 @@ class Sliding1DGame {
                     
                     <div id="controls-wrapper" class="relative flex flex-col items-center gap-2">
                         <div class="flex items-center gap-4">
-                            <button onclick="currentGame.shiftRow(1)" class="control-btn">▶</button>
+                            <button onclick="window.currentGame.shiftRow(1)" class="control-btn">▶</button>
 
                             <div id="cipher-grid" class="flex gap-2"></div>
 
-                            <button onclick="currentGame.shiftRow(-1)" class="control-btn">◀</button>
+                            <button onclick="window.currentGame.shiftRow(-1)" class="control-btn">◀</button>
                         </div>
                     </div>
                     
                     <div class="mt-12 flex flex-col gap-4 w-full px-8">
-                        <button onclick="currentGame.initGrid()" class="rest flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
+                        <button onclick="window.currentGame.initGrid()" class="rest flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
                         
                         <div id="success-nav" class="hidden animate-fadeIn w-full">
                             <button onclick="GameManager.nextLevel()" class="w-full py-3 rounded font-bold shadow-lg transition-all success-textured-btn">
@@ -138,5 +138,48 @@ class Sliding1DGame {
             }
             return char;
         }).join('');
+    }
+    provideHint(stage) {
+        if (stage === 0) {
+            // Hint 1: Show first row letters in a Sticky Parchment
+            const firstRow = this.solvedGrid[0].join(' - ');
+            this.showStickyHint("أحرف الصف الأول مرتبة هي: " + firstRow);
+        } 
+        else if (stage === 1) {
+            // Hint 2: Enable "Green Mode"
+            this.greenModeActive = true;
+            this.renderGrid();
+        }
+    }
+
+    showStickyHint(message) {
+        // Remove existing hint if there is one
+        const existing = document.querySelector('.parchment-hint');
+        if (existing) existing.remove();
+
+        const hintEl = document.createElement('div');
+        hintEl.className = 'parchment-hint';
+        hintEl.innerHTML = `<span>${message}</span>`;
+        
+        // Clicking the hint hides it
+        hintEl.onclick = () => {
+            hintEl.style.opacity = '0';
+            setTimeout(() => hintEl.remove(), 500);
+        };
+
+        document.body.appendChild(hintEl);
+    }
+    autoSolve() {
+        // 1. Force the current grid to match the solved state
+        this.grid = JSON.parse(JSON.stringify(this.solvedGrid));
+        
+        // 2. Refresh the UI to show the correct letters
+        this.renderAll();
+        
+        // 3. Trigger the standard win logic
+        this.afterMove(); 
+        
+        // Optional: Stop the timer since the level is over
+        if (typeof HintSystem !== 'undefined') HintSystem.reset();
     }
 }

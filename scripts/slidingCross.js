@@ -17,28 +17,28 @@ class SlidingCrossGame {
                     
                     <div id="controls-wrapper" class="relative flex flex-col items-center gap-2 transition-all duration-500">
                         <div class="flex">
-                            <button onclick="currentGame.shiftCol(1, -1)" class="control-btn">▲</button>
+                            <button onclick="window.currentGame.shiftCol(1, -1)" class="control-btn">▲</button>
                         </div>
 
                         <div class="flex items-center gap-2">
                             <div class="flex flex-col">
-                                <button onclick="currentGame.shiftRow(1, 1)" class="control-btn">▶</button>
+                                <button onclick="window.currentGame.shiftRow(1, 1)" class="control-btn">▶</button>
                             </div>
 
                             <div id="cipher-grid" class="grid grid-cols-3 gap-2 p-2"></div>
 
                             <div class="flex flex-col">
-                                <button onclick="currentGame.shiftRow(1, -1)" class="control-btn">◀</button>
+                                <button onclick="window.currentGame.shiftRow(1, -1)" class="control-btn">◀</button>
                             </div>
                         </div>
 
                         <div class="flex">
-                            <button onclick="currentGame.shiftCol(1, 1)" class="control-btn">▼</button>
+                            <button onclick="window.currentGame.shiftCol(1, 1)" class="control-btn">▼</button>
                         </div>
                     </div>
 
                     <div class="mt-12 flex gap-4 w-full px-8">
-                        <button onclick="currentGame.initGrid()" class="rest flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
+                        <button onclick="window.currentGame.initGrid()" class="rest flex-1 border border-zinc-700 p-2 rounded text-xs">إعادة تعيين</button>
                         
                         <div id="success-nav" class="hidden animate-fadeIn w-full">
                             <button onclick="GameManager.nextLevel()" class="w-full py-3 rounded font-bold shadow-lg transition-all success-textured-btn">
@@ -190,19 +190,27 @@ class SlidingCrossGame {
         for (let r = 0; r < 3; r++) {
             for (let c = 0; c < 3; c++) {
                 const char = this.grid[r][c];
+                const solvedChar = this.solvedGrid[r][c];
                 const div = document.createElement('div');
                 
-                // Fixed size 64x64px
                 div.style.width = '64px';
                 div.style.height = '64px';
 
                 if (char === null) {
-                    div.className = 'opacity-0'; // Spacer cell
+                    div.className = 'opacity-0'; 
                 } else {
                     div.className = 'grid-cell grid-cell-active';
                     div.innerText = char;
                     div.dataset.row = r;
                     div.dataset.col = c;
+
+                    // FIX: Check if Green Mode is active AND this specific cell matches the solved character
+                    if (this.greenModeActive && char === solvedChar) {
+                        div.style.color = "#4ade80"; 
+                        div.style.textShadow = "0 0 10px rgba(74, 222, 128, 0.5)";
+                        div.style.borderColor = "#4ade80";
+                        div.style.boxShadow = "inset 0 0 10px rgba(74, 222, 128, 0.2)";
+                    }
                 }
                 container.appendChild(div);
             }
@@ -226,5 +234,45 @@ class SlidingCrossGame {
             }
             return char;
         }).join('');
+    }
+    
+    provideHint(stage) {
+        if (stage === 0) {
+            // Since it's a Cross, the "First Row" is actually just one letter (Top of the +)
+            // Let's show the Center and Top letters instead for a better hint.
+            const topChar = this.solvedGrid[0][1];
+            const centerChar = this.solvedGrid[1][1];
+            this.showStickyHint(`الأحرف المحورية هي: الأعلى (${topChar}) والمنتصف (${centerChar})`);
+        } 
+        else if (stage === 1) {
+            this.greenModeActive = true;
+            this.renderGrid();
+        }
+    }
+
+    showStickyHint(message) {
+        // Remove existing hint if there is one
+        const existing = document.querySelector('.parchment-hint');
+        if (existing) existing.remove();
+
+        const hintEl = document.createElement('div');
+        hintEl.className = 'parchment-hint';
+        hintEl.innerHTML = `<span>${message}</span>`;
+        
+
+        document.body.appendChild(hintEl);
+    }
+    autoSolve() {
+        // 1. Force the current grid to match the solved state
+        this.grid = JSON.parse(JSON.stringify(this.solvedGrid));
+        
+        // 2. Refresh the UI to show the correct letters
+        this.renderAll();
+        
+        // 3. Trigger the standard win logic
+        this.afterMove(); 
+        
+        // Optional: Stop the timer since the level is over
+        if (typeof HintSystem !== 'undefined') HintSystem.reset();
     }
 }
