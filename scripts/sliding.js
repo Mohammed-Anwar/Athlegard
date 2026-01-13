@@ -248,7 +248,7 @@ class SlidingGame {
     renderText() {
         const display = document.getElementById('text-display');
         const textLength = this.data.text.length;
-        console.log(textLength)
+        
         // Adjust font size based on character count
         if (textLength > 400) {
             display.style.fontSize = "1.0rem";

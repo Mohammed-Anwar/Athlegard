@@ -276,6 +276,16 @@ class SlidingBrokenGame {
 
     renderText() {
         const display = document.getElementById('text-display');
+        const textLength = this.data.text.length;
+        
+        // Adjust font size based on character count
+        if (textLength > 400) {
+            display.style.fontSize = "1.0rem";
+        } else if (textLength > 150) {
+            display.style.fontSize = "1.4rem";
+        } else {
+            display.style.fontSize = "2.2rem";
+        }
         const map = {};
         this.solvedGrid.flat().forEach((char, i) => map[char] = this.grid.flat()[i]);
         
